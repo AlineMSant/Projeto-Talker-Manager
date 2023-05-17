@@ -1,4 +1,4 @@
-// Requisitos 1 ao 7 foram baseados nos exercicios da seção nos dias 4 (Exercicios - agora, a prática 1 e 2) e 2 (Exercicios - agora, a prática - Movies - 4, 5, 6, 7, 8 e 9 );
+// Requisitos 1 ao 8 foram baseados nos exercicios da seção nos dias 4 (Exercicios - agora, a prática 1 e 2) e 2 (Exercicios - agora, a prática - Movies - 4, 5, 6, 7, 8, 9 e 10);
 const express = require('express');
 const validateAge = require('./middlewares/validateAge');
 const validateAuthorization = require('./middlewares/validateAuthorization');
@@ -21,6 +21,21 @@ const PORT = process.env.PORT || '3001';
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
+});
+
+app.get('/talker/search', validateAuthorization, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await talkerUtils.readTalker();
+
+  if (q) {
+    const filteredTalkers = talkers.filter((obj) => obj.name.includes(q));
+    return res.status(200).json(filteredTalkers);
+  }
+  if (!q) {
+    return res.status(200).json(talkers);
+  }
+
+  return res.status(200).json([]);
 });
 
 app.get('/talker', async (req, res) => {
