@@ -1,4 +1,5 @@
 const express = require('express');
+const validateEmail = require('./middlewares/validateEmail');
 const generateToken = require('./utils/generateToken');
 
 const talkerUtils = require('./utils/talkerUtils');
@@ -30,7 +31,7 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', validateEmail, (req, res) => {
   const { email, password } = req.body;
 
   if (email && password) {
