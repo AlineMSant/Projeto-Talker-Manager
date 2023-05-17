@@ -4,6 +4,7 @@ const validateAuthorization = require('./middlewares/validateAuthorization');
 const validateEmail = require('./middlewares/validateEmail');
 const validateName = require('./middlewares/validateName');
 const validatePassword = require('./middlewares/validatePassword');
+const validateTalk = require('./middlewares/validateTalk');
 const generateToken = require('./utils/generateToken');
 
 const talkerUtils = require('./utils/talkerUtils');
@@ -44,7 +45,7 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
   }
 });
 
-app.post('/talker', validateAuthorization, validateName, validateAge, (req, res) => {
+app.post('/talker', validateAuthorization, validateName, validateAge, validateTalk, (req, res) => {
   return res.status(200).json({ validação: 'feita' })
 });
 
