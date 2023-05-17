@@ -1,4 +1,5 @@
 const express = require('express');
+const validateAge = require('./middlewares/validateAge');
 const validateAuthorization = require('./middlewares/validateAuthorization');
 const validateEmail = require('./middlewares/validateEmail');
 const validateName = require('./middlewares/validateName');
@@ -43,7 +44,7 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
   }
 });
 
-app.post('/talker', validateAuthorization, validateName, (req, res) => {
+app.post('/talker', validateAuthorization, validateName, validateAge, (req, res) => {
   return res.status(200).json({ validação: 'feita' })
 });
 
