@@ -45,8 +45,25 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
   }
 });
 
-app.post('/talker', validateAuthorization, validateName, validateAge, validateTalk, (req, res) => {
-  return res.status(200).json({ validação: 'feita' })
+app.post('/talker',
+validateAuthorization,
+validateName,
+validateAge,
+validateTalk, async (req, res) => {
+  const { name, age, talk } = req.body;
+  const talkers = await talkerUtils.readTalker();
+
+  const newTalker = {
+    id: talkers.length + 1,
+    name,
+    age,
+    talk,
+  };
+
+  const allTalkers = JSON.stringify([...talkers, newTalker]);
+  await talkerUtils.writeTalker(allTalkers);
+
+  return res.status(201).json(newTalker);
 });
 
 app.listen(PORT, () => {

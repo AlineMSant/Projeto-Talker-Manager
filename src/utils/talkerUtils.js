@@ -12,6 +12,11 @@ const readTalker = async () => {
   }
 };
 
+const writeTalker = async (allTalkers) => {
+  await fs.writeFile(join(__dirname, path), allTalkers);
+};
+
 module.exports = {
   readTalker,
+  writeTalker,
 };
