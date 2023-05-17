@@ -96,6 +96,17 @@ validateRate, async (req, res) => {
     return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
 });
 
+app.delete('/talker/:id', validateAuthorization, async (req, res) => {
+    const { id } = req.params;
+    const talkers = await talkerUtils.readTalker();
+    const filteredTalkers = talkers.filter((obj) => obj.id !== Number(id));
+
+    const updatedTalkers = JSON.stringify(filteredTalkers);
+    await talkerUtils.writeTalker(updatedTalkers);
+
+    return res.status(204).end();
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
