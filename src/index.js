@@ -29,18 +29,18 @@ app.get('/talker/search', validateAuthorization, async (req, res) => {
 
   if (q) {
     const filteredTalkers = talkers.filter((obj) => obj.name.includes(q));
-    return res.status(200).json(filteredTalkers);
+    return res.status(HTTP_OK_STATUS).json(filteredTalkers);
   }
   if (!q) {
-    return res.status(200).json(talkers);
+    return res.status(HTTP_OK_STATUS).json(talkers);
   }
 
-  return res.status(200).json([]);
+  return res.status(HTTP_OK_STATUS).json([]);
 });
 
 app.get('/talker', async (req, res) => {
     const talkers = await talkerUtils.readTalker();
-    return res.status(200).json(talkers);
+    return res.status(HTTP_OK_STATUS).json(talkers);
 });
 
 app.get('/talker/:id', async (req, res) => {
@@ -48,7 +48,7 @@ app.get('/talker/:id', async (req, res) => {
     const talker = talkers.find((obj) => obj.id === Number(req.params.id));
 
     if (talker) {
-      return res.status(200).json(talker);
+      return res.status(HTTP_OK_STATUS).json(talker);
     }
     
     return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
@@ -59,7 +59,7 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
 
   if (email && password) {
     const token = generateToken();
-    return res.status(200).json({ token });
+    return res.status(HTTP_OK_STATUS).json({ token });
   }
 });
 
@@ -106,7 +106,7 @@ validateRate, async (req, res) => {
       const updatedTalkers = JSON.stringify(talkers);
       await talkerUtils.writeTalker(updatedTalkers);
   
-      return res.status(200).json({ id: Number(id), name, age, talk });
+      return res.status(HTTP_OK_STATUS).json({ id: Number(id), name, age, talk });
     }
 
     return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
