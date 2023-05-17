@@ -1,3 +1,4 @@
+// Requisitos 1 ao 7 foram baseados nos exercicios da seção nos dias 4 (Exercicios - agora, a prática 1 e 2) e 2 (Exercicios - agora, a prática - Movies - 4, 5, 6, 7, 8 e 9 );
 const express = require('express');
 const validateAge = require('./middlewares/validateAge');
 const validateAuthorization = require('./middlewares/validateAuthorization');
