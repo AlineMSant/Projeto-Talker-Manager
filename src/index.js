@@ -1,4 +1,5 @@
 const express = require('express');
+const validateAuthorization = require('./middlewares/validateAuthorization');
 const validateEmail = require('./middlewares/validateEmail');
 const validatePassword = require('./middlewares/validatePassword');
 const generateToken = require('./utils/generateToken');
@@ -39,6 +40,9 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
     const token = generateToken();
     return res.status(200).json({ token });
   }
+});
+
+app.post('/talker', validateAuthorization, (req, res) => {
 });
 
 app.listen(PORT, () => {
