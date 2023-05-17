@@ -4,7 +4,9 @@ const validateAuthorization = require('./middlewares/validateAuthorization');
 const validateEmail = require('./middlewares/validateEmail');
 const validateName = require('./middlewares/validateName');
 const validatePassword = require('./middlewares/validatePassword');
+const validateRate = require('./middlewares/validateRate');
 const validateTalk = require('./middlewares/validateTalk');
+const validateWatchedAt = require('./middlewares/validateWatchedAt');
 const generateToken = require('./utils/generateToken');
 
 const talkerUtils = require('./utils/talkerUtils');
@@ -49,7 +51,9 @@ app.post('/talker',
 validateAuthorization,
 validateName,
 validateAge,
-validateTalk, async (req, res) => {
+validateTalk,
+validateWatchedAt,
+validateRate, async (req, res) => {
   const { name, age, talk } = req.body;
   const talkers = await talkerUtils.readTalker();
 
