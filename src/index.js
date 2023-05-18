@@ -9,7 +9,9 @@ const validatePassword = require('./middlewares/validatePassword');
 const { verifyQ,
   verifyRate,
   verifyNone,
-  verifyRateIsNumber } = require('./middlewares/verifySearch');
+  verifyRateIsNumber,
+  verifyDateIsDate,
+  verifyDate } = require('./middlewares/verifySearch');
 const validateRate = require('./middlewares/validateRate');
 const validateTalk = require('./middlewares/validateTalk');
 const validateWatchedAt = require('./middlewares/validateWatchedAt');
@@ -33,7 +35,9 @@ validateAuthorization,
 verifyQ,
 verifyNone,
 verifyRateIsNumber,
-verifyRate, async (req, res) => {
+verifyRate,
+verifyDateIsDate,
+verifyDate, async (req, res) => {
   const { q, rate } = req.query;
   const talkers = await talkerUtils.readTalker();
   const rateNumber = Number(rate);
