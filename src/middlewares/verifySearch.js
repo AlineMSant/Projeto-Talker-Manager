@@ -23,13 +23,20 @@ const verifyNone = async (req, res, next) => {
   next();
 };
 
-const verifyUnd = async (req, res, next) => {
+const verifyUndDate = async (req, res, next) => {
   const { q, rate, date } = req.query;
   const talkers = await talkerUtils.readTalker();
 
   if (!q && !rate && date === undefined) {
     return res.status(200).json(talkers);
   }
+
+  next();
+};
+
+const verifyUndQ = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+
   if (q === undefined && !rate && !date) {
     return res.status(200).json([]);
   }
@@ -41,7 +48,29 @@ const verifyRateIsNumber = async (req, res, next) => {
   const { q, rate, date } = req.query;
   const rateNumber = Number(rate);
 
-  if ((!q && !date && !Number.isInteger(rateNumber)) || (!q && !date && Number(rate) <= 0) || (!q && !date && Number(rate) > 5)) {
+  if (!q && !date && !Number.isInteger(rateNumber)) {
+    return res.status(400)
+    .json({ message: 'O campo "rate" deve ser um número inteiro entre 1 e 5' });
+  }
+
+  next();
+};
+
+const verifyRateIsLessThanOne = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+
+  if (!q && !date && Number(rate) <= 0) {
+    return res.status(400)
+    .json({ message: 'O campo "rate" deve ser um número inteiro entre 1 e 5' });
+  }
+
+  next();
+};
+
+const verifyRateIsMoreThenFive = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+
+  if (!q && !date && Number(rate) > 5) {
     return res.status(400)
     .json({ message: 'O campo "rate" deve ser um número inteiro entre 1 e 5' });
   }
@@ -86,12 +115,59 @@ const verifyDate = async (req, res, next) => {
   next();
 };
 
+const verifyRateAndQ = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+  const talkers = await talkerUtils.readTalker();
+  const rateNumber = Number(rate);
+
+  if (rate && q && !date) {
+    const filteredTalkers = talkers
+    .filter((obj) => obj.talk.rate === rateNumber && obj.name.includes(q));
+    return res.status(200).json(filteredTalkers);
+  }
+
+  next();
+};
+
+const verifyQAndDate = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+  const talkers = await talkerUtils.readTalker();
+
+  if (!rate && q && date) {
+    const filteredTalkers = talkers
+    .filter((obj) => obj.talk.watchedAt === date && obj.name.includes(q));
+    return res.status(200).json(filteredTalkers);
+  }
+
+  next();
+};
+
+const verifyRateAndDate = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+  const talkers = await talkerUtils.readTalker();
+  const rateNumber = Number(rate);
+
+  if (rate && !q && date) {
+    const filteredTalkers = talkers
+    .filter((obj) => obj.talk.watchedAt === date && obj.talk.rate === rateNumber);
+    return res.status(200).json(filteredTalkers);
+  }
+
+  next();
+};
+
 module.exports = {
   verifyQ,
   verifyNone,
-  verifyUnd,
+  verifyUndDate,
+  verifyUndQ,
   verifyRateIsNumber,
+  verifyRateIsLessThanOne,
+  verifyRateIsMoreThenFive,
   verifyRate,
   verifyDateIsDate,
   verifyDate,
+  verifyRateAndQ,
+  verifyQAndDate,
+  verifyRateAndDate,
 };

@@ -9,10 +9,16 @@ const validatePassword = require('./middlewares/validatePassword');
 const { verifyQ,
   verifyRate,
   verifyNone,
-  verifyUnd,
+  verifyUndDate,
+  verifyUndQ,
   verifyRateIsNumber,
+  verifyRateIsLessThanOne,
+  verifyRateIsMoreThenFive,
   verifyDateIsDate,
-  verifyDate } = require('./middlewares/verifySearch');
+  verifyDate,
+  verifyRateAndQ,
+  verifyQAndDate,
+  verifyRateAndDate } = require('./middlewares/verifySearch');
 const validateRate = require('./middlewares/validateRate');
 const validateTalk = require('./middlewares/validateTalk');
 const validateWatchedAt = require('./middlewares/validateWatchedAt');
@@ -35,36 +41,25 @@ app.get('/talker/search',
 validateAuthorization,
 verifyQ,
 verifyNone,
-verifyUnd,
+verifyUndDate,
+verifyUndQ,
 verifyRateIsNumber,
+verifyRateIsLessThanOne,
+verifyRateIsMoreThenFive,
 verifyRate,
 verifyDateIsDate,
-verifyDate, async (req, res) => {
+verifyDate,
+verifyRateAndQ,
+verifyQAndDate,
+verifyRateAndDate, async (req, res) => {
   const { q, rate, date } = req.query;
   const talkers = await talkerUtils.readTalker();
   const rateNumber = Number(rate);
 
-  if (rate && q && !date) {
-    const filteredTalkers = talkers
-    .filter((obj) => obj.talk.rate === rateNumber && obj.name.includes(q));
-    return res.status(200).json(filteredTalkers);
-  }
-
-  if (!rate && q && date) {
-    const filteredTalkers = talkers
-    .filter((obj) => obj.talk.watchedAt === date && obj.name.includes(q));
-    return res.status(200).json(filteredTalkers);
-  }
-
-  if (rate && !q && date) {
-    const filteredTalkers = talkers
-    .filter((obj) => obj.talk.watchedAt === date && obj.talk.rate === rateNumber);
-    return res.status(200).json(filteredTalkers);
-  }
-
   if (rate && q && date) {
     const filteredTalkers = talkers
-    .filter((obj) => obj.talk.watchedAt === date && obj.talk.rate === rateNumber && obj.name.includes(q));
+    .filter((obj) => obj.talk.watchedAt === date
+    && obj.talk.rate === rateNumber && obj.name.includes(q));
     return res.status(200).json(filteredTalkers);
   }
 });
