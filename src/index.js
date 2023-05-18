@@ -9,6 +9,7 @@ const validatePassword = require('./middlewares/validatePassword');
 const { verifyQ,
   verifyRate,
   verifyNone,
+  verifyUnd,
   verifyRateIsNumber,
   verifyDateIsDate,
   verifyDate } = require('./middlewares/verifySearch');
@@ -34,17 +35,36 @@ app.get('/talker/search',
 validateAuthorization,
 verifyQ,
 verifyNone,
+verifyUnd,
 verifyRateIsNumber,
 verifyRate,
 verifyDateIsDate,
 verifyDate, async (req, res) => {
-  const { q, rate } = req.query;
+  const { q, rate, date } = req.query;
   const talkers = await talkerUtils.readTalker();
   const rateNumber = Number(rate);
 
-  if (rate && q) {
+  if (rate && q && !date) {
     const filteredTalkers = talkers
     .filter((obj) => obj.talk.rate === rateNumber && obj.name.includes(q));
+    return res.status(200).json(filteredTalkers);
+  }
+
+  if (!rate && q && date) {
+    const filteredTalkers = talkers
+    .filter((obj) => obj.talk.watchedAt === date && obj.name.includes(q));
+    return res.status(200).json(filteredTalkers);
+  }
+
+  if (rate && !q && date) {
+    const filteredTalkers = talkers
+    .filter((obj) => obj.talk.watchedAt === date && obj.talk.rate === rateNumber);
+    return res.status(200).json(filteredTalkers);
+  }
+
+  if (rate && q && date) {
+    const filteredTalkers = talkers
+    .filter((obj) => obj.talk.watchedAt === date && obj.talk.rate === rateNumber && obj.name.includes(q));
     return res.status(200).json(filteredTalkers);
   }
 });

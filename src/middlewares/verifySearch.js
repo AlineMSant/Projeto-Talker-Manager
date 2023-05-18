@@ -1,7 +1,7 @@
 const talkerUtils = require('../utils/talkerUtils');
 
 const verifyQ = async (req, res, next) => {
-  const { q, rate, date} = req.query;
+  const { q, rate, date } = req.query;
   const talkers = await talkerUtils.readTalker();
 
   if (q && !rate && !date) {
@@ -20,10 +20,16 @@ const verifyNone = async (req, res, next) => {
     return res.status(200).json(talkers);
   }
 
+  next();
+};
+
+const verifyUnd = async (req, res, next) => {
+  const { q, rate, date } = req.query;
+  const talkers = await talkerUtils.readTalker();
+
   if (!q && !rate && date === undefined) {
     return res.status(200).json(talkers);
   }
-
   if (q === undefined && !rate && !date) {
     return res.status(200).json([]);
   }
@@ -83,6 +89,7 @@ const verifyDate = async (req, res, next) => {
 module.exports = {
   verifyQ,
   verifyNone,
+  verifyUnd,
   verifyRateIsNumber,
   verifyRate,
   verifyDateIsDate,
