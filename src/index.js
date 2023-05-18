@@ -6,6 +6,10 @@ const validateEmail = require('./middlewares/validateEmail');
 const validateName = require('./middlewares/validateName');
 const validateOnlyRate = require('./middlewares/validateOnlyRate');
 const validatePassword = require('./middlewares/validatePassword');
+const { verifyQ,
+  verifyRate,
+  verifyNone,
+  verifyRateIsNumber } = require('./middlewares/verifySearch');
 const validateRate = require('./middlewares/validateRate');
 const validateTalk = require('./middlewares/validateTalk');
 const validateWatchedAt = require('./middlewares/validateWatchedAt');
@@ -24,19 +28,21 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.get('/talker/search', validateAuthorization, async (req, res) => {
-  const { q } = req.query;
+app.get('/talker/search',
+validateAuthorization,
+verifyQ,
+verifyNone,
+verifyRateIsNumber,
+verifyRate, async (req, res) => {
+  const { q, rate } = req.query;
   const talkers = await talkerUtils.readTalker();
+  const rateNumber = Number(rate);
 
-  if (q) {
-    const filteredTalkers = talkers.filter((obj) => obj.name.includes(q));
-    return res.status(HTTP_OK_STATUS).json(filteredTalkers);
+  if (rate && q) {
+    const filteredTalkers = talkers
+    .filter((obj) => obj.talk.rate === rateNumber && obj.name.includes(q));
+    return res.status(200).json(filteredTalkers);
   }
-  if (!q) {
-    return res.status(HTTP_OK_STATUS).json(talkers);
-  }
-
-  return res.status(HTTP_OK_STATUS).json([]);
 });
 
 app.get('/talker', async (req, res) => {
