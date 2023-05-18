@@ -4,6 +4,7 @@ const validateAge = require('./middlewares/validateAge');
 const validateAuthorization = require('./middlewares/validateAuthorization');
 const validateEmail = require('./middlewares/validateEmail');
 const validateName = require('./middlewares/validateName');
+const validateOnlyRate = require('./middlewares/validateOnlyRate');
 const validatePassword = require('./middlewares/validatePassword');
 const validateRate = require('./middlewares/validateRate');
 const validateTalk = require('./middlewares/validateTalk');
@@ -121,6 +122,33 @@ app.delete('/talker/:id', validateAuthorization, async (req, res) => {
     await talkerUtils.writeTalker(updatedTalkers);
 
     return res.status(204).end();
+});
+
+app.patch('/talker/rate/:id',
+validateAuthorization, validateOnlyRate, async (req, res) => {
+    const { id } = req.params;
+    const { rate } = req.body;
+    const talkers = await talkerUtils.readTalker();
+    const talker = talkers.find((obj) => obj.id === Number(req.params.id));
+  
+      const index = talkers.findIndex((obj) => obj.id === Number(id));
+
+      const newTalker = {
+        id: Number(id),
+        name: talker.name,
+        age: talker.age,
+        talk: {
+          watchedAt: talker.talk.watchedAt,
+          rate: rate,
+        }
+      }
+  
+      talkers[index] = newTalker;
+    
+      const updatedTalkers = JSON.stringify(talkers);
+      await talkerUtils.writeTalker(updatedTalkers);
+  
+      return res.status(204).end();
 });
 
 app.listen(PORT, () => {
