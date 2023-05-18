@@ -37,6 +37,7 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+// req 8-9-10
 app.get('/talker/search',
 validateAuthorization,
 verifyQ,
@@ -64,11 +65,13 @@ verifyRateAndDate, async (req, res) => {
   }
 });
 
+// req 1
 app.get('/talker', async (req, res) => {
     const talkers = await talkerUtils.readTalker();
     return res.status(HTTP_OK_STATUS).json(talkers);
 });
 
+// req 2
 app.get('/talker/:id', async (req, res) => {
     const talkers = await talkerUtils.readTalker();
     const talker = talkers.find((obj) => obj.id === Number(req.params.id));
@@ -80,6 +83,7 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
 });
 
+// req 3
 app.post('/login', validateEmail, validatePassword, (req, res) => {
   const { email, password } = req.body;
 
@@ -89,6 +93,7 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
   }
 });
 
+// req 5
 app.post('/talker',
 validateAuthorization,
 validateName,
@@ -112,6 +117,7 @@ validateRate, async (req, res) => {
   return res.status(201).json(newTalker);
 });
 
+// req 6
 app.put('/talker/:id',
 validateAuthorization,
 validateName,
@@ -138,6 +144,7 @@ validateRate, async (req, res) => {
     return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
 });
 
+// req 7
 app.delete('/talker/:id', validateAuthorization, async (req, res) => {
     const { id } = req.params;
     const talkers = await talkerUtils.readTalker();
@@ -149,6 +156,7 @@ app.delete('/talker/:id', validateAuthorization, async (req, res) => {
     return res.status(204).end();
 });
 
+// req 11
 app.patch('/talker/rate/:id',
 validateAuthorization, validateOnlyRate, async (req, res) => {
     const { id } = req.params;
